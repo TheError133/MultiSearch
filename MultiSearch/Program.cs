@@ -23,7 +23,7 @@ namespace MultiSearch
         {
             return File.ReadAllLines(FileName).ToList<string>();
         }
-        static void checkFolder (string FolderName, List<string> StringList, List<string> FolderList)
+        static void checkFolder(string FolderName, List<string> StringList, List<string> FolderList)
         {
             foreach (string InnerFolder in Directory.GetDirectories(FolderName))
                 checkFolder(InnerFolder, StringList, FolderList);
@@ -33,7 +33,7 @@ namespace MultiSearch
             }
         }
 
-        static string getFieldFromXML (string XMLFile, string Path, string Node)
+        static string getFieldFromXML(string XMLFile, string Path, string Node)
         {
             string Result = "";
             using (StreamReader SR = new StreamReader(XMLFile, Encoding.Default))
