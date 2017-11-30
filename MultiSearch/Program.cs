@@ -15,24 +15,43 @@ namespace MultiSearch
         static void Main(string[] args)
         {
             List<string> StringList = StringList = initList(getFieldFromXML("settings.xml", "/Properties", "StringFile")),
-                FolderList = initList(getFieldFromXML("settings.xml", "/Properties", "FolderFile")),
-                ResultsList = new List<string>();
+                FolderList = initList(getFieldFromXML("settings.xml", "/Properties", "FolderFile"));
             ResultFile = getFieldFromXML("settings.xml", "/Properties", "ResultFile");
         }
         static List<string> initList(string FileName)
         {
             return File.ReadAllLines(FileName).ToList<string>();
         }
-        static void checkFolder(string FolderName, List<string> StringList, List<string> FolderList)
+        static void checkFolder(string FolderName, List<string> StringList)
         {
+            //Проход по папкам внутри папки поиска
             foreach (string InnerFolder in Directory.GetDirectories(FolderName))
-                checkFolder(InnerFolder, StringList, FolderList);
+                checkFolder(InnerFolder, StringList);
+
+            //Проход по текстовым файлам внутри папки поиска
             foreach (string InnerFile in Directory.GetFiles(FolderName))
-            {
-
-            }
+                foreach (string StringToSearch in StringList)
+                {
+                    string FoundString = getStringFromFile(InnerFile, StringToSearch);
+                    if (FoundString != null)
+                        lock ("WriteToResultFile")
+                            using (StreamWriter SW = new StreamWriter(ResultFile, true, Encoding.Default))
+                                SW.WriteLine(FoundString);
+                }
         }
-
+        static string getStringFromFile (string FileName, string StringToSearch)
+        {
+            using (StreamReader SR = new StreamReader(FileName, Encoding.Default))
+                while (true)
+                {
+                    string FileString = SR.ReadLine();
+                    if (FileString == null)
+                        break;
+                    if (FileString.Contains(StringToSearch))
+                        return StringToSearch + "\t" + FileName;
+                }
+            return null;
+        }
         static string getFieldFromXML(string XMLFile, string Path, string Node)
         {
             string Result = "";
