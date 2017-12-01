@@ -141,7 +141,7 @@ namespace MultiSearch
         //Прострочная выгрузка файла в список
         static List<string> initList(string FileName)
         {
-            return File.ReadAllLines(FileName).Where(n => n.Length > 0).ToList<string>();
+            return File.ReadAllLines(FileName, Encoding.Default).Where(n => n.Length > 0).ToList<string>();
         }
 
         //Поиск строки в файле
