@@ -4,8 +4,10 @@
 	<ResultFile>Results.txt</ResultFile>
 	<FoundFolder>Results</FoundFolder>
 	<!--
+	¬ пол€х ниже true дл€ выполнени€ поиска данного формата, любое иное значение дл€ пропуска данного поиска
 	<SearchInZip>true</SearchInZip> - ƒл€ поиска по архивам zip
-	
+	<SearchInRar>true</SearchInRar> - ƒл€ поиска по архивам rar
 	-->
 	<SearchInZip>true</SearchInZip>
+	<SearchInRar>true</SearchInRar>
 </Properties>

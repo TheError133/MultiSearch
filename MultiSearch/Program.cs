@@ -7,7 +7,8 @@ using System.Xml;
 using System.IO;
 using System.Threading;
 using System.Text.RegularExpressions;
-using Ionic.Zip;
+using SharpCompress.Archive;
+using SharpCompress.Common;
 
 namespace MultiSearch
 {
@@ -21,10 +22,11 @@ namespace MultiSearch
                 FolderList = initList(getFieldFromXML("settings.xml", "/Properties", "FolderFile"));//Список папок поиска
             ResultFile = getFieldFromXML("settings.xml", "/Properties", "ResultFile");//Файл с результатами поиска
             FoundFolder = getFieldFromXML("settings.xml", "/Properties", "FoundFolder");//Папка, куда будут копироваться файлы с найденными строками
-            int ThreadCount = StringList.Count().ToString().Length;
+            int ThreadCount = StringList.Count().ToString().Length;//Количество потоков утилиты. Зависит от числа символов в количестве строк поиска (5 - 1 поток, 16 - 2 потока, 291 - 3 потока, 10927 - 5 потоков и т.д.)
             Console.WriteLine("{0}. Число потоков - {1}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), ThreadCount);
             Thread.Sleep(2000);
             List<Thread> ThreadList = new List<Thread>();
+            //При отсутствии папка результатов создается
             if (!Directory.Exists(FoundFolder))
                 Directory.CreateDirectory(FoundFolder);
             //Разделение строковых данных между потоками
@@ -48,11 +50,10 @@ namespace MultiSearch
             foreach (Thread InnerThread in ThreadList)
                 InnerThread.Join();
             Console.WriteLine("{0}. Поиск завершен.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"));
+            Thread.Sleep(2000);
         }
-        static List<string> initList(string FileName)
-        {
-            return File.ReadAllLines(FileName).Where(n => n.Length > 0).ToList<string>();
-        }
+
+        //Рекурсивный поиск по файлам в папках
         static void checkFolder(string FolderName, List<string> StringList, int ThreadNumber, string FoundFilePath)
         {
             //Проход по папкам внутри папки поиска
@@ -85,15 +86,15 @@ namespace MultiSearch
                         }
                     }
                 }
-
+                /*
                 //Проверка файлов как zip-архивов
                 if (getFieldFromXML("settings.xml", "/Properties", "SearchInZip").ToLower() == "true")
                 {
                     string NewWorkingFolder = trimSeparator(Directory.GetCurrentDirectory()) + "\\" + "Thread_" + ThreadNumber + "_" + DateTime.Now.ToString("ddMMyyyy_HHmmssfff");
                     //Console.WriteLine("Создаваемая временная папка - {0}", NewWorkingFolder);
                     //Console.ReadKey();
-                        try
-                        {
+                    try
+                    {
                         using (ZipFile ZFile = new ZipFile(InnerFile))
                         {
                             if (!Directory.Exists(NewWorkingFolder))
@@ -110,8 +111,40 @@ namespace MultiSearch
                         //Файл не является zip-архивом
                     }
                 }
+                */
+                //Проверка файлов как архивов
+                if (getFieldFromXML("settings.xml", "/Properties", "SearchInArchives").ToLower() == "true")
+                {
+                    string NewWorkingFolder = trimSeparator(Directory.GetCurrentDirectory()) + "\\" + "Thread_" + ThreadNumber + "_" + DateTime.Now.ToString("ddMMyyyy_HHmmssfff");
+                    try
+                    {
+                        if (!Directory.Exists(NewWorkingFolder))
+                            Directory.CreateDirectory(NewWorkingFolder);
+                        var Archive = ArchiveFactory.Open(InnerFile);
+                        foreach (var Entry in Archive.Entries)
+                            Entry.WriteToDirectory(NewWorkingFolder, ExtractOptions.Overwrite);
+                        FileInfo FI = new FileInfo(InnerFile);
+                        checkFolder(NewWorkingFolder, StringList, ThreadNumber, trimSeparator(FoundFilePath) + "\\" + FI.Name);
+                        if (Directory.Exists(NewWorkingFolder))
+                            Directory.Delete(NewWorkingFolder, true);
+                    }
+                    catch (Exception Ex)
+                    {
+                        //Файл не является rar-архивом
+                        if (Directory.Exists(NewWorkingFolder))
+                            Directory.Delete(NewWorkingFolder, true);
+                    }
+                }
             }
         }
+
+        //Прострочная выгрузка файла в список
+        static List<string> initList(string FileName)
+        {
+            return File.ReadAllLines(FileName).Where(n => n.Length > 0).ToList<string>();
+        }
+
+        //Поиск строки в файле
         static string getStringFromFile(string FileName, string StringToSearch, string FoundFilePath)
         {
             using (StreamReader SR = new StreamReader(FileName, Encoding.Default))
@@ -126,6 +159,8 @@ namespace MultiSearch
                 }
             return null;
         }
+
+        //Считывание поля из файла XML
         static string getFieldFromXML(string XMLFile, string Path, string Node)
         {
             string Result = "";
@@ -147,6 +182,8 @@ namespace MultiSearch
             }
             return Result;
         }
+
+        //Обрезалка слеша на конце строки с именем папки
         static string trimSeparator (string InputString)
         {
             return InputString[InputString.Length - 1] == '\\' ? InputString.Substring(0, InputString.Length - 1) : InputString;
