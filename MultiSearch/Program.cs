@@ -21,6 +21,8 @@ namespace MultiSearch
             ResultFile = getFieldFromXML("settings.xml", "/Properties", "ResultFile");//Файл с результатами поиска
             FoundFolder = getFieldFromXML("settings.xml", "/Properties", "FoundFolder");//Папка, куда будут копироваться файлы с найденными строками
             int ThreadCount = StringList.Count().ToString().Length;
+            Console.WriteLine("{0}. Число потоков - {1}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), ThreadCount);
+            Thread.Sleep(2000);
             List<Thread> ThreadList = new List<Thread>();
             if (!Directory.Exists(FoundFolder))
                 Directory.CreateDirectory(FoundFolder);
@@ -29,20 +31,18 @@ namespace MultiSearch
             {
                 List<string> InnerStringList = new List<string>();
                 for (int j = i * StringList.Count() / ThreadCount; j < (i + 1) * StringList.Count() / ThreadCount; j++)
-                    InnerStringList.Add(StringList.ElementAt(i));
+                    InnerStringList.Add(StringList.ElementAt(j));
                 Thread InnerThread = new Thread(() =>
                 {
                     foreach (string InnerFolder in FolderList)
                         checkFolder(InnerFolder, InnerStringList);
                 }
                 );
-                ThreadList.Add(InnerThread);
-            }
-            //Запуск потоков поиска
-            foreach (Thread InnerThread in ThreadList)
-            {
+                //Запуск потока поиска
                 InnerThread.Start();
+                Console.WriteLine("{0}. Поток {1} запущен.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), i);
                 Thread.Sleep(100);
+                ThreadList.Add(InnerThread);
             }
             foreach (Thread InnerThread in ThreadList)
                 InnerThread.Join();
