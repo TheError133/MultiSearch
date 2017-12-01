@@ -3,4 +3,9 @@
 	<FolderFile>Folders.txt</FolderFile>
 	<ResultFile>Results.txt</ResultFile>
 	<FoundFolder>Results</FoundFolder>
+	<!--
+	<SearchInZip>true</SearchInZip> - Для поиска по архивам zip
+	
+	-->
+	<SearchInZip>true</SearchInZip>
 </Properties>

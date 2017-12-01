@@ -57,7 +57,7 @@ namespace MultiSearch
         {
             //Проход по папкам внутри папки поиска
             foreach (string InnerFolder in Directory.GetDirectories(FolderName))
-                checkFolder(InnerFolder, StringList, ThreadNumber, trimSeparator(FoundFilePath) + @"\" + (new DirectoryInfo(InnerFolder)).Name);
+                checkFolder(InnerFolder, StringList, ThreadNumber, trimSeparator(FoundFilePath) + "\\" + (new DirectoryInfo(InnerFolder)).Name);
 
             foreach (string InnerFile in Directory.GetFiles(FolderName))
             {
@@ -73,10 +73,10 @@ namespace MultiSearch
                                 SW.WriteLine(FoundString);
                                 Console.WriteLine("{0}. Поток {3}. {1} найдено в файле {2}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), FoundString.Split('\t')[0], FoundString.Split('\t')[1], ThreadNumber);
                             }
-                        FileInfo FI = new FileInfo(FoundString.Split('\t')[1]);
+                        FileInfo FI = new FileInfo(InnerFile);
                         try
                         {
-                            File.Copy(FI.FullName, FoundFolder + (FoundFolder[FoundFolder.Length - 1] == '\\' ? "" : "\\") + FI.Name, true);
+                            File.Copy(FI.FullName, trimSeparator(FoundFolder) + "\\" + FI.Name, true);
                         }
                         catch (Exception Ex)
                         {
@@ -87,12 +87,29 @@ namespace MultiSearch
                 }
 
                 //Проверка файлов как zip-архивов
-                /*using (ZipFile ZFile = new ZipFile(InnerFile))
-                    try
-                    {
-                        ZFile.ExtractAll()
+                if (getFieldFromXML("settings.xml", "/Properties", "SearchInZip").ToLower() == "true")
+                {
+                    string NewWorkingFolder = trimSeparator(Directory.GetCurrentDirectory()) + "\\" + "Thread_" + ThreadNumber + "_" + DateTime.Now.ToString("ddMMyyyy_HHmmssfff");
+                    //Console.WriteLine("Создаваемая временная папка - {0}", NewWorkingFolder);
+                    //Console.ReadKey();
+                        try
+                        {
+                        using (ZipFile ZFile = new ZipFile(InnerFile))
+                        {
+                            if (!Directory.Exists(NewWorkingFolder))
+                                Directory.CreateDirectory(NewWorkingFolder);
+                            ZFile.ExtractAll(NewWorkingFolder, ExtractExistingFileAction.OverwriteSilently);
+                            FileInfo FI = new FileInfo(InnerFile);
+                            checkFolder(NewWorkingFolder, StringList, ThreadNumber, trimSeparator(FoundFilePath) + "\\" + FI.Name);
+                            if (Directory.Exists(NewWorkingFolder))
+                                Directory.Delete(NewWorkingFolder, true);
+                        }
                     }
-                 * */
+                    catch (Exception Ex)
+                    {
+                        //Файл не является zip-архивом
+                    }
+                }
             }
         }
         static string getStringFromFile(string FileName, string StringToSearch, string FoundFilePath)
@@ -105,7 +122,7 @@ namespace MultiSearch
                     if (FileString == null)
                         break;
                     if (FileString.Contains(StringToSearch))
-                        return StringToSearch + "\t" + trimSeparator(FoundFilePath) + @"\" + FI.Name;
+                        return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name;
                 }
             return null;
         }

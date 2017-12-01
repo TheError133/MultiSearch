@@ -1,1 +1,7 @@
 C:\GitRepository\SharpProjects\MultiSearch\MultiSearch\bin\Debug\MultiSearch.exe.config
+D:\roman\SharpProjects\MultiSearch\MultiSearch\bin\Debug\MultiSearch.exe.config
+D:\roman\SharpProjects\MultiSearch\MultiSearch\bin\Debug\MultiSearch.exe
+D:\roman\SharpProjects\MultiSearch\MultiSearch\bin\Debug\MultiSearch.pdb
+D:\roman\SharpProjects\MultiSearch\MultiSearch\obj\Debug\MultiSearch.csprojResolveAssemblyReference.cache
+D:\roman\SharpProjects\MultiSearch\MultiSearch\obj\Debug\MultiSearch.exe
+D:\roman\SharpProjects\MultiSearch\MultiSearch\obj\Debug\MultiSearch.pdb
