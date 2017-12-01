@@ -7,6 +7,7 @@ using System.Xml;
 using System.IO;
 using System.Threading;
 using System.Text.RegularExpressions;
+using Ionic.Zip;
 
 namespace MultiSearch
 {
@@ -35,7 +36,7 @@ namespace MultiSearch
                 Thread InnerThread = new Thread(() =>
                 {
                     foreach (string InnerFolder in FolderList)
-                        checkFolder(InnerFolder, InnerStringList, i);
+                        checkFolder(InnerFolder, InnerStringList, i, InnerFolder);
                 }
                 );
                 //Запуск потока поиска
@@ -52,17 +53,18 @@ namespace MultiSearch
         {
             return File.ReadAllLines(FileName).Where(n => n.Length > 0).ToList<string>();
         }
-        static void checkFolder(string FolderName, List<string> StringList, int ThreadNumber)
+        static void checkFolder(string FolderName, List<string> StringList, int ThreadNumber, string FoundFilePath)
         {
             //Проход по папкам внутри папки поиска
             foreach (string InnerFolder in Directory.GetDirectories(FolderName))
-                checkFolder(InnerFolder, StringList, ThreadNumber);
+                checkFolder(InnerFolder, StringList, ThreadNumber, trimSeparator(FoundFilePath) + @"\" + (new DirectoryInfo(InnerFolder)).Name);
 
-            //Проход по текстовым файлам внутри папки поиска
             foreach (string InnerFile in Directory.GetFiles(FolderName))
+            {
+                //Проход по текстовым файлам внутри папки поиска
                 foreach (string StringToSearch in StringList)
                 {
-                    string FoundString = getStringFromFile(InnerFile, StringToSearch);
+                    string FoundString = getStringFromFile(InnerFile, StringToSearch, FoundFilePath);
                     if (FoundString != null)
                     {
                         lock ("WriteToResultFile")
@@ -83,17 +85,27 @@ namespace MultiSearch
                         }
                     }
                 }
+
+                //Проверка файлов как zip-архивов
+                /*using (ZipFile ZFile = new ZipFile(InnerFile))
+                    try
+                    {
+                        ZFile.ExtractAll()
+                    }
+                 * */
+            }
         }
-        static string getStringFromFile (string FileName, string StringToSearch)
+        static string getStringFromFile(string FileName, string StringToSearch, string FoundFilePath)
         {
             using (StreamReader SR = new StreamReader(FileName, Encoding.Default))
                 while (true)
                 {
                     string FileString = SR.ReadLine();
+                    FileInfo FI = new FileInfo(FileName);
                     if (FileString == null)
                         break;
                     if (FileString.Contains(StringToSearch))
-                        return StringToSearch + "\t" + FileName;
+                        return StringToSearch + "\t" + trimSeparator(FoundFilePath) + @"\" + FI.Name;
                 }
             return null;
         }
@@ -117,6 +129,10 @@ namespace MultiSearch
                 }
             }
             return Result;
+        }
+        static string trimSeparator (string InputString)
+        {
+            return InputString[InputString.Length - 1] == '\\' ? InputString.Substring(0, InputString.Length - 1) : InputString;
         }
     }
 }

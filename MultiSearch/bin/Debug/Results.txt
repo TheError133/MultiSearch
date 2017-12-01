@@ -1,0 +1,2 @@
+60300017739194	\\trident2.russianpost.ru\c$\MessageBroker\LocalStore\SimpleRtm5\CFSM\2017_12_01\RM20171201000459CFSM889.CSV
+14580218004760	\\trident2.russianpost.ru\c$\MessageBroker\LocalStore\SimpleRtm5\CFSM\2017_12_01\RM20171201005959CFSM948.CSV

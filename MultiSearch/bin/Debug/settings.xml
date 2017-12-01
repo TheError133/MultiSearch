@@ -1,0 +1,6 @@
+<Properties>
+	<StringFile>Barcodes.txt</StringFile>
+	<FolderFile>Folders.txt</FolderFile>
+	<ResultFile>Results.txt</ResultFile>
+	<FoundFolder>Results</FoundFolder>
+</Properties>
