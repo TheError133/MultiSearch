@@ -9,6 +9,7 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using SharpCompress.Archive;
 using SharpCompress.Common;
+using Ionic.Zip;
 
 namespace MultiSearch
 {
@@ -94,7 +95,7 @@ namespace MultiSearch
                         }
                     }
                 }
-                /*
+                
                 //Проверка файлов как zip-архивов
                 if (getFieldFromXML("settings.xml", "/Properties", "SearchInZip").ToLower() == "true")
                 {
@@ -119,9 +120,9 @@ namespace MultiSearch
                         //Файл не является zip-архивом
                     }
                 }
-                */
-                //Проверка файлов как архивов
-                if (getFieldFromXML("settings.xml", "/Properties", "SearchInArchives").ToLower() == "true")
+                
+                //Проверка файлов как архивов всех форматов
+                if (getFieldFromXML("settings.xml", "/Properties", "SearchInAllArchives").ToLower() == "true")
                 {
                     string NewWorkingFolder = trimSeparator(Directory.GetCurrentDirectory()) + "\\" + "Thread_" + ThreadNumber + "_" + DateTime.Now.ToString("ddMMyyyy_HHmmssfff");
                     try
@@ -138,7 +139,7 @@ namespace MultiSearch
                     }
                     catch (Exception Ex)
                     {
-                        //Файл не является rar-архивом
+                        //Файл не является архивом
                         if (Directory.Exists(NewWorkingFolder))
                             Directory.Delete(NewWorkingFolder, true);
                     }
