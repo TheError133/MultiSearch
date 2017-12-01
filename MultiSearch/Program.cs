@@ -6,21 +6,51 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace MultiSearch
 {
     class Program
     {
-        static string ResultFile = "";
+        static string ResultFile = "",
+            FoundFolder = "";
         static void Main(string[] args)
         {
-            List<string> StringList = StringList = initList(getFieldFromXML("settings.xml", "/Properties", "StringFile")),
-                FolderList = initList(getFieldFromXML("settings.xml", "/Properties", "FolderFile"));
-            ResultFile = getFieldFromXML("settings.xml", "/Properties", "ResultFile");
+            List<string> StringList = initList(getFieldFromXML("settings.xml", "/Properties", "StringFile")),//Список строк поиска
+                FolderList = initList(getFieldFromXML("settings.xml", "/Properties", "FolderFile"));//Список папок поиска
+            ResultFile = getFieldFromXML("settings.xml", "/Properties", "ResultFile");//Файл с результатами поиска
+            FoundFolder = getFieldFromXML("settings.xml", "/Properties", "FoundFolder");//Папка, куда будут копироваться файлы с найденными строками
+            int ThreadCount = StringList.Count().ToString().Length;
+            List<Thread> ThreadList = new List<Thread>();
+            if (!Directory.Exists(FoundFolder))
+                Directory.CreateDirectory(FoundFolder);
+            //Разделение строковых данных между потоками
+            for (int i = 0; i < ThreadCount; i++)
+            {
+                List<string> InnerStringList = new List<string>();
+                for (int j = i * StringList.Count() / ThreadCount; j < (i + 1) * StringList.Count() / ThreadCount; j++)
+                    InnerStringList.Add(StringList.ElementAt(i));
+                Thread InnerThread = new Thread(() =>
+                {
+                    foreach (string InnerFolder in FolderList)
+                        checkFolder(InnerFolder, InnerStringList);
+                }
+                );
+                ThreadList.Add(InnerThread);
+            }
+            //Запуск потоков поиска
+            foreach (Thread InnerThread in ThreadList)
+            {
+                InnerThread.Start();
+                Thread.Sleep(100);
+            }
+            foreach (Thread InnerThread in ThreadList)
+                InnerThread.Join();
+            Console.WriteLine("{0}. Поиск завершен.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"));
         }
         static List<string> initList(string FileName)
         {
-            return File.ReadAllLines(FileName).ToList<string>();
+            return File.ReadAllLines(FileName).Where(n => n.Length > 0).ToList<string>();
         }
         static void checkFolder(string FolderName, List<string> StringList)
         {
@@ -34,9 +64,24 @@ namespace MultiSearch
                 {
                     string FoundString = getStringFromFile(InnerFile, StringToSearch);
                     if (FoundString != null)
+                    {
                         lock ("WriteToResultFile")
                             using (StreamWriter SW = new StreamWriter(ResultFile, true, Encoding.Default))
+                            {
                                 SW.WriteLine(FoundString);
+                                Console.WriteLine("{0}. {1} найдено в файле {2}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), FoundString.Split('\t')[0], FoundString.Split('\t')[1]);
+                            }
+                        FileInfo FI = new FileInfo(FoundString.Split('\t')[1]);
+                        try
+                        {
+                            File.Copy(FI.FullName, FoundFolder + (FoundFolder[FoundFolder.Length - 1] == '\\' ? "" : "\\") + FI.Name, true);
+                        }
+                        catch (Exception Ex)
+                        {
+                            Console.WriteLine("{0}. Ошибка копирования файла. {1}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), Ex.Message);
+                            Console.ReadKey();
+                        }
+                    }
                 }
         }
         static string getStringFromFile (string FileName, string StringToSearch)
@@ -67,6 +112,7 @@ namespace MultiSearch
                 catch (Exception Ex)
                 {
                     Console.WriteLine("{0}. Ошибка чтения из файла настроек. {1}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), Ex.Message);
+                    Console.ReadKey(); 
                     return null;
                 }
             }
