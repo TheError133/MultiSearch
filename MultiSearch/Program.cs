@@ -23,8 +23,12 @@ namespace MultiSearch
             ResultFile = getFieldFromXML("settings.xml", "/Properties", "ResultFile");//Файл с результатами поиска
             FoundFolder = getFieldFromXML("settings.xml", "/Properties", "FoundFolder");//Папка, куда будут копироваться файлы с найденными строками
             int ThreadCount = StringList.Count().ToString().Length;//Количество потоков утилиты. Зависит от числа символов в количестве строк поиска (5 - 1 поток, 16 - 2 потока, 291 - 3 потока, 10927 - 5 потоков и т.д.)
+            
             Console.WriteLine("{0}. Число потоков - {1}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), ThreadCount);
+            Console.WriteLine("{0}. Число строк поиска - {1}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), StringList.Count());
+            Console.WriteLine("{0}. Число папок поиска - {1}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), FolderList.Count()); 
             Thread.Sleep(2000);
+
             List<Thread> ThreadList = new List<Thread>();
             //При отсутствии папка результатов создается
             if (!Directory.Exists(FoundFolder))
@@ -38,7 +42,10 @@ namespace MultiSearch
                 Thread InnerThread = new Thread(() =>
                 {
                     foreach (string InnerFolder in FolderList)
+                    {
+                        Console.WriteLine("{0}. Поток {1}. Анализируем данные в {2}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), i, InnerFolder);
                         checkFolder(InnerFolder, InnerStringList, i, InnerFolder);
+                    }
                 }
                 );
                 //Запуск потока поиска
