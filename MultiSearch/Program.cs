@@ -35,7 +35,7 @@ namespace MultiSearch
                 Thread InnerThread = new Thread(() =>
                 {
                     foreach (string InnerFolder in FolderList)
-                        checkFolder(InnerFolder, InnerStringList);
+                        checkFolder(InnerFolder, InnerStringList, i);
                 }
                 );
                 //Запуск потока поиска
@@ -52,11 +52,11 @@ namespace MultiSearch
         {
             return File.ReadAllLines(FileName).Where(n => n.Length > 0).ToList<string>();
         }
-        static void checkFolder(string FolderName, List<string> StringList)
+        static void checkFolder(string FolderName, List<string> StringList, int ThreadNumber)
         {
             //Проход по папкам внутри папки поиска
             foreach (string InnerFolder in Directory.GetDirectories(FolderName))
-                checkFolder(InnerFolder, StringList);
+                checkFolder(InnerFolder, StringList, ThreadNumber);
 
             //Проход по текстовым файлам внутри папки поиска
             foreach (string InnerFile in Directory.GetFiles(FolderName))
@@ -69,7 +69,7 @@ namespace MultiSearch
                             using (StreamWriter SW = new StreamWriter(ResultFile, true, Encoding.Default))
                             {
                                 SW.WriteLine(FoundString);
-                                Console.WriteLine("{0}. {1} найдено в файле {2}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), FoundString.Split('\t')[0], FoundString.Split('\t')[1]);
+                                Console.WriteLine("{0}. Поток {3}. {1} найдено в файле {2}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), FoundString.Split('\t')[0], FoundString.Split('\t')[1], ThreadNumber);
                             }
                         FileInfo FI = new FileInfo(FoundString.Split('\t')[1]);
                         try
