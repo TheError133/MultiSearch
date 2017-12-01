@@ -56,6 +56,7 @@ namespace MultiSearch
         //Рекурсивный поиск по файлам в папках
         static void checkFolder(string FolderName, List<string> StringList, int ThreadNumber, string FoundFilePath)
         {
+            Console.WriteLine("{0}. Поток {1}. Анализируем данные в {2}",DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), ThreadNumber, FoundFilePath);
             //Проход по папкам внутри папки поиска
             foreach (string InnerFolder in Directory.GetDirectories(FolderName))
                 checkFolder(InnerFolder, StringList, ThreadNumber, trimSeparator(FoundFilePath) + "\\" + (new DirectoryInfo(InnerFolder)).Name);
