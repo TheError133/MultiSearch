@@ -1,0 +1,8 @@
+D:\GIT\Sharp Projects\MultiSearch\MultiSearch\bin\Release\MultiSearch.exe.config
+D:\GIT\Sharp Projects\MultiSearch\MultiSearch\bin\Release\MultiSearch.exe
+D:\GIT\Sharp Projects\MultiSearch\MultiSearch\bin\Release\MultiSearch.pdb
+D:\GIT\Sharp Projects\MultiSearch\MultiSearch\bin\Release\Ionic.Zip.dll
+D:\GIT\Sharp Projects\MultiSearch\MultiSearch\bin\Release\SharpCompress.dll
+D:\GIT\Sharp Projects\MultiSearch\MultiSearch\obj\Release\MultiSearch.csprojResolveAssemblyReference.cache
+D:\GIT\Sharp Projects\MultiSearch\MultiSearch\obj\Release\MultiSearch.exe
+D:\GIT\Sharp Projects\MultiSearch\MultiSearch\obj\Release\MultiSearch.pdb
