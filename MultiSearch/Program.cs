@@ -44,8 +44,15 @@ namespace MultiSearch
                 {
                     foreach (string InnerFolder in FolderList)
                     {
-                        Console.WriteLine("{0}. Поток {1}. Анализируем данные в {2}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), i, InnerFolder);
-                        checkFolder(InnerFolder, InnerStringList, i, InnerFolder);
+                        if (Directory.Exists(InnerFolder))
+                        {
+                            Console.WriteLine("{0}. Поток {1}. Анализируем данные в {2}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), i, InnerFolder);
+                            checkFolder(InnerFolder, InnerStringList, i, InnerFolder);
+                        }
+                        else
+                        {
+                            Console.WriteLine("{0}. Поток {1}. Папки {2} не существует. Либо проверьте указанный путь, либо кодировку файла с папками (она должна быть ANSI).", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), i, InnerFolder);
+                        }
                     }
                 }
                 );
@@ -150,7 +157,16 @@ namespace MultiSearch
         //Прострочная выгрузка файла в список
         static List<string> initList(string FileName)
         {
-            return File.ReadAllLines(FileName, Encoding.Default).Where(n => n.Length > 0).ToList<string>();
+            try
+            { 
+                return File.ReadAllLines(FileName, Encoding.Default).Where(n => n.Length > 0).ToList<string>();
+            }
+            catch (Exception Ex)
+            {
+                Console.WriteLine("{0}. Ошибка чтения из файла {1}. {2}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), FileName, Ex.Message);
+                Console.ReadKey();
+                return new List<string>();
+            }
         }
 
         //Поиск строки в файле
