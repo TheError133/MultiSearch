@@ -47,7 +47,7 @@ namespace MultiSearch
                         if (Directory.Exists(InnerFolder))
                         {
                             Console.WriteLine("{0}. Поток {1}. Анализируем данные в {2}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), Thread.CurrentThread.Name, InnerFolder);
-                            checkFolder(InnerFolder, InnerStringList, i, InnerFolder);
+                            checkFolder(InnerFolder, InnerStringList, InnerFolder);
                         }
                         else
                         {
@@ -70,12 +70,12 @@ namespace MultiSearch
         }
 
         //Рекурсивный поиск по файлам в папках
-        static void checkFolder(string FolderName, List<string> StringList, int ThreadNumber, string FoundFilePath)
+        static void checkFolder(string FolderName, List<string> StringList, string FoundFilePath)
         {
             //Console.WriteLine("{0}. Поток {1}. Анализируем данные в {2}",DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), ThreadNumber, FoundFilePath);
             //Проход по папкам внутри папки поиска
             foreach (string InnerFolder in Directory.GetDirectories(FolderName))
-                checkFolder(InnerFolder, StringList, ThreadNumber, trimSeparator(FoundFilePath) + "\\" + (new DirectoryInfo(InnerFolder)).Name);
+                checkFolder(InnerFolder, StringList, trimSeparator(FoundFilePath) + "\\" + (new DirectoryInfo(InnerFolder)).Name);
 
             foreach (string InnerFile in Directory.GetFiles(FolderName))
             {
@@ -89,7 +89,7 @@ namespace MultiSearch
                             using (StreamWriter SW = new StreamWriter(ResultFile, true, Encoding.Default))
                             {
                                 SW.WriteLine(FoundString);
-                                Console.WriteLine("{0}. Поток {3}. {1} найдено в файле {2}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), FoundString.Split('\t')[0], FoundString.Split('\t')[1], ThreadNumber);
+                                Console.WriteLine("{0}. Поток {3}. {1} найдено в файле {2}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), FoundString.Split('\t')[0], FoundString.Split('\t')[1], Thread.CurrentThread.Name);
                             }
                         FileInfo FI = new FileInfo(InnerFile);
                         try
@@ -107,7 +107,7 @@ namespace MultiSearch
                 //Проверка файлов как zip-архивов
                 if (getFieldFromXML("settings.xml", "/Properties", "SearchInZip").ToLower() == "true")
                 {
-                    string NewWorkingFolder = trimSeparator(Directory.GetCurrentDirectory()) + "\\" + "Thread_" + ThreadNumber + "_" + DateTime.Now.ToString("ddMMyyyy_HHmmssfff");
+                    string NewWorkingFolder = trimSeparator(Directory.GetCurrentDirectory()) + "\\" + "Thread_" + Thread.CurrentThread.Name + "_" + DateTime.Now.ToString("ddMMyyyy_HHmmssfff");
                     //Console.WriteLine("Создаваемая временная папка - {0}", NewWorkingFolder);
                     //Console.ReadKey();
                     try
@@ -118,7 +118,7 @@ namespace MultiSearch
                                 Directory.CreateDirectory(NewWorkingFolder);
                             ZFile.ExtractAll(NewWorkingFolder, ExtractExistingFileAction.OverwriteSilently);
                             FileInfo FI = new FileInfo(InnerFile);
-                            checkFolder(NewWorkingFolder, StringList, ThreadNumber, trimSeparator(FoundFilePath) + "\\" + FI.Name);
+                            checkFolder(NewWorkingFolder, StringList, trimSeparator(FoundFilePath) + "\\" + FI.Name);
                             if (Directory.Exists(NewWorkingFolder))
                                 Directory.Delete(NewWorkingFolder, true);
                         }
@@ -132,7 +132,7 @@ namespace MultiSearch
                 //Проверка файлов как архивов всех форматов
                 if (getFieldFromXML("settings.xml", "/Properties", "SearchInAllArchives").ToLower() == "true")
                 {
-                    string NewWorkingFolder = trimSeparator(Directory.GetCurrentDirectory()) + "\\" + "Thread_" + ThreadNumber + "_" + DateTime.Now.ToString("ddMMyyyy_HHmmssfff");
+                    string NewWorkingFolder = trimSeparator(Directory.GetCurrentDirectory()) + "\\" + "Thread_" + Thread.CurrentThread.Name + "_" + DateTime.Now.ToString("ddMMyyyy_HHmmssfff");
                     try
                     {
                         if (!Directory.Exists(NewWorkingFolder))
@@ -141,7 +141,7 @@ namespace MultiSearch
                         foreach (var Entry in Archive.Entries)
                             Entry.WriteToDirectory(NewWorkingFolder, ExtractOptions.Overwrite);
                         FileInfo FI = new FileInfo(InnerFile);
-                        checkFolder(NewWorkingFolder, StringList, ThreadNumber, trimSeparator(FoundFilePath) + "\\" + FI.Name);
+                        checkFolder(NewWorkingFolder, StringList, trimSeparator(FoundFilePath) + "\\" + FI.Name);
                         if (Directory.Exists(NewWorkingFolder))
                             Directory.Delete(NewWorkingFolder, true);
                     }
