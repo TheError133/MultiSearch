@@ -46,19 +46,20 @@ namespace MultiSearch
                     {
                         if (Directory.Exists(InnerFolder))
                         {
-                            Console.WriteLine("{0}. Поток {1}. Анализируем данные в {2}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), i, InnerFolder);
+                            Console.WriteLine("{0}. Поток {1}. Анализируем данные в {2}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), Thread.CurrentThread.Name, InnerFolder);
                             checkFolder(InnerFolder, InnerStringList, i, InnerFolder);
                         }
                         else
                         {
-                            Console.WriteLine("{0}. Поток {1}. Папки {2} не существует. Либо проверьте указанный путь, либо кодировку файла с папками (она должна быть ANSI).", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), i, InnerFolder);
+                            Console.WriteLine("{0}. Поток {1}. Папки {2} не существует. Либо проверьте указанный путь, либо кодировку файла с папками (она должна быть ANSI).", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), Thread.CurrentThread.Name, InnerFolder);
                         }
                     }
                 }
                 );
                 //Запуск потока поиска
+                InnerThread.Name = i.ToString();
                 InnerThread.Start();
-                Console.WriteLine("{0}. Поток {1} запущен.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), i);
+                Console.WriteLine("{0}. Поток {1} запущен.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), InnerThread.Name);
                 Thread.Sleep(100);
                 ThreadList.Add(InnerThread);
             }
