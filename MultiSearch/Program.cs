@@ -172,9 +172,9 @@ namespace MultiSearch
         //Поиск строки в файле
         static string getStringFromFile(string FileName, string StringToSearch, string FoundFilePath)
         {
-            if (getFieldFromXML("settings.xml", "/EncodingSettings", "CheckEncoding").ToLower() == "true")
+            if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "CheckEncoding").ToLower() == "true")
             { 
-                if (getFieldFromXML("settings.xml", "/EncodingSettings", "ANSI").ToLower() == "true")
+                if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "ANSI").ToLower() == "true")
                     using (StreamReader SR = new StreamReader(FileName, Encoding.Default))
                         while (true)
                         {
@@ -185,7 +185,7 @@ namespace MultiSearch
                             if (FileString.Contains(StringToSearch))
                                 return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
                         }
-                if (getFieldFromXML("settings.xml", "/EncodingSettings", "UTF-8").ToLower() == "true")
+                if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "UTF-8").ToLower() == "true")
                     using (StreamReader SR = new StreamReader(FileName, Encoding.UTF8))
                         while (true)
                         {
@@ -196,7 +196,7 @@ namespace MultiSearch
                             if (FileString.Contains(StringToSearch))
                                 return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
                         }
-                if (getFieldFromXML("settings.xml", "/EncodingSettings", "CP866").ToLower() == "true")
+                if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "CP866").ToLower() == "true")
                     using (StreamReader SR = new StreamReader(FileName, Encoding.GetEncoding(866)))
                         while (true)
                         {
@@ -207,7 +207,7 @@ namespace MultiSearch
                             if (FileString.Contains(StringToSearch))
                                 return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
                         }
-                if (getFieldFromXML("settings.xml", "/EncodingSettings", "CP1251").ToLower() == "true")
+                if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "CP1251").ToLower() == "true")
                     using (StreamReader SR = new StreamReader(FileName, Encoding.GetEncoding(1251)))
                         while (true)
                         {
@@ -218,7 +218,7 @@ namespace MultiSearch
                             if (FileString.Contains(StringToSearch))
                                 return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
                         }
-                if (getFieldFromXML("settings.xml", "/EncodingSettings", "Standart").ToLower() == "true")
+                if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "Standart").ToLower() == "true")
                     using (StreamReader SR = new StreamReader(FileName, Encoding.GetEncoding(1251)))
                         while (true)
                         {
