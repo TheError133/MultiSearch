@@ -94,7 +94,7 @@ namespace MultiSearch
                         catch (Exception Ex)
                         {
                             Console.WriteLine("{0}. Ошибка копирования файла. {1}", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), Ex.Message);
-                            Console.ReadKey();
+                            //Console.ReadKey();
                         }
                     }
                 }
@@ -172,16 +172,75 @@ namespace MultiSearch
         //Поиск строки в файле
         static string getStringFromFile(string FileName, string StringToSearch, string FoundFilePath)
         {
-            using (StreamReader SR = new StreamReader(FileName, Encoding.Default))
-                while (true)
-                {
-                    string FileString = SR.ReadLine();
-                    FileInfo FI = new FileInfo(FileName);
-                    if (FileString == null)
-                        break;
-                    if (FileString.Contains(StringToSearch))
-                        return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name;
-                }
+            if (getFieldFromXML("settings.xml", "/EncodingSettings", "CheckEncoding").ToLower() == "true")
+            { 
+                if (getFieldFromXML("settings.xml", "/EncodingSettings", "ANSI").ToLower() == "true")
+                    using (StreamReader SR = new StreamReader(FileName, Encoding.Default))
+                        while (true)
+                        {
+                            string FileString = SR.ReadLine();
+                            FileInfo FI = new FileInfo(FileName);
+                            if (FileString == null)
+                                break;
+                            if (FileString.Contains(StringToSearch))
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                        }
+                if (getFieldFromXML("settings.xml", "/EncodingSettings", "UTF-8").ToLower() == "true")
+                    using (StreamReader SR = new StreamReader(FileName, Encoding.UTF8))
+                        while (true)
+                        {
+                            string FileString = SR.ReadLine();
+                            FileInfo FI = new FileInfo(FileName);
+                            if (FileString == null)
+                                break;
+                            if (FileString.Contains(StringToSearch))
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                        }
+                if (getFieldFromXML("settings.xml", "/EncodingSettings", "CP866").ToLower() == "true")
+                    using (StreamReader SR = new StreamReader(FileName, Encoding.GetEncoding(866)))
+                        while (true)
+                        {
+                            string FileString = SR.ReadLine();
+                            FileInfo FI = new FileInfo(FileName);
+                            if (FileString == null)
+                                break;
+                            if (FileString.Contains(StringToSearch))
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                        }
+                if (getFieldFromXML("settings.xml", "/EncodingSettings", "CP1251").ToLower() == "true")
+                    using (StreamReader SR = new StreamReader(FileName, Encoding.GetEncoding(1251)))
+                        while (true)
+                        {
+                            string FileString = SR.ReadLine();
+                            FileInfo FI = new FileInfo(FileName);
+                            if (FileString == null)
+                                break;
+                            if (FileString.Contains(StringToSearch))
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                        }
+                if (getFieldFromXML("settings.xml", "/EncodingSettings", "Standart").ToLower() == "true")
+                    using (StreamReader SR = new StreamReader(FileName, Encoding.GetEncoding(1251)))
+                        while (true)
+                        {
+                            string FileString = SR.ReadLine();
+                            FileInfo FI = new FileInfo(FileName);
+                            if (FileString == null)
+                                break;
+                            if (FileString.Contains(StringToSearch))
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                        }
+            }
+            else
+                using (StreamReader SR = new StreamReader(FileName))
+                    while (true)
+                    {
+                        string FileString = SR.ReadLine();
+                        FileInfo FI = new FileInfo(FileName);
+                        if (FileString == null)
+                            break;
+                        if (FileString.Contains(StringToSearch))
+                            return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                    }
             return null;
         }
 
