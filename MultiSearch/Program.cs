@@ -172,6 +172,7 @@ namespace MultiSearch
         //Поиск строки в файле
         static string getStringFromFile(string FileName, string StringToSearch, string FoundFilePath)
         {
+            bool Marker = getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "IncludeFoundString").ToLower() == "true" ? true : false;
             if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "CheckEncoding").ToLower() == "true")
             { 
                 if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "ANSI").ToLower() == "true")
@@ -183,7 +184,7 @@ namespace MultiSearch
                             if (FileString == null)
                                 break;
                             if (FileString.Contains(StringToSearch))
-                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + ((Marker == true) ? ("\t" + FileString) : "");
                         }
                 if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "UTF-8").ToLower() == "true")
                     using (StreamReader SR = new StreamReader(FileName, Encoding.UTF8))
@@ -194,7 +195,7 @@ namespace MultiSearch
                             if (FileString == null)
                                 break;
                             if (FileString.Contains(StringToSearch))
-                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + ((Marker == true) ? ("\t" + FileString) : "");
                         }
                 if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "CP866").ToLower() == "true")
                     using (StreamReader SR = new StreamReader(FileName, Encoding.GetEncoding(866)))
@@ -205,7 +206,7 @@ namespace MultiSearch
                             if (FileString == null)
                                 break;
                             if (FileString.Contains(StringToSearch))
-                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + ((Marker == true) ? ("\t" + FileString) : "");
                         }
                 if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "CP1251").ToLower() == "true")
                     using (StreamReader SR = new StreamReader(FileName, Encoding.GetEncoding(1251)))
@@ -216,7 +217,7 @@ namespace MultiSearch
                             if (FileString == null)
                                 break;
                             if (FileString.Contains(StringToSearch))
-                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + ((Marker == true) ? ("\t" + FileString) : "");
                         }
                 if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "Standart").ToLower() == "true")
                     using (StreamReader SR = new StreamReader(FileName, Encoding.GetEncoding(1251)))
@@ -227,7 +228,7 @@ namespace MultiSearch
                             if (FileString == null)
                                 break;
                             if (FileString.Contains(StringToSearch))
-                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                                return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + ((Marker == true) ? ("\t" + FileString) : "");
                         }
             }
             else
@@ -239,7 +240,7 @@ namespace MultiSearch
                         if (FileString == null)
                             break;
                         if (FileString.Contains(StringToSearch))
-                            return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + "\t" + FileString;
+                            return StringToSearch + "\t" + trimSeparator(FoundFilePath) + "\\" + FI.Name + ((Marker == true) ? ("\t" + FileString) : "");
                     }
             return null;
         }
