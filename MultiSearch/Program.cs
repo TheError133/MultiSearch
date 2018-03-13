@@ -23,7 +23,7 @@ namespace MultiSearch
                 FolderList = initList(getFieldFromXML("settings.xml", "/Properties", "FolderFile"));//Список папок поиска
             ResultFile = getFieldFromXML("settings.xml", "/Properties", "ResultFile");//Файл с результатами поиска
             FoundFolder = getFieldFromXML("settings.xml", "/Properties", "FoundFolder");//Папка, куда будут копироваться файлы с найденными строками
-            int ThreadCount = StringList.Count().ToString().Length;//Количество потоков утилиты. Зависит от числа символов в количестве строк поиска (5 - 1 поток, 16 - 2 потока, 291 - 3 потока, 10927 - 5 потоков и т.д.)
+            int ThreadCount = StringList.Count().ToString().Length * 2;//Количество потоков утилиты. Зависит от числа символов в количестве строк поиска (5 - коэф. 1, 16 - коэф. 2, 291 - коэф. 3, 10927 - коэф. 5 и т.п.). Впоследствии коэффициент умножается на 2, что и является числом рабочих потоков программы.
             
             Console.WriteLine("{0}. Число потоков - {1}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), ThreadCount);
             Console.WriteLine("{0}. Число строк поиска - {1}.", DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"), StringList.Count());
