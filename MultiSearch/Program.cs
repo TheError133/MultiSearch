@@ -172,7 +172,7 @@ namespace MultiSearch
         //Поиск строки в файле
         static string getStringFromFile(string FileName, string StringToSearch, string FoundFilePath)
         {
-            bool Marker = getFieldFromXML("settings.xml", "/Properties", "IncludeFoundString").ToLower() == "true" ? true : false;
+            bool Marker = getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "IncludeFoundString").ToLower() == "true" ? true : false;
             if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "CheckEncoding").ToLower() == "true")
             { 
                 if (getFieldFromXML("settings.xml", "/Properties/EncodingSettings", "ANSI").ToLower() == "true")
