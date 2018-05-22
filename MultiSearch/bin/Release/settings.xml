@@ -1,0 +1,33 @@
+<Properties>
+	<!-- Основные настройки утилиты -->
+	<!-- Файл со строками поиска -->
+	<StringFile>Barcodes.txt</StringFile>
+	<!-- Файл с папками поиска -->
+	<FolderFile>Folders.txt</FolderFile>
+	<!-- Файл результатов поиска -->
+	<ResultFile>Results.txt</ResultFile>
+	<!-- Папка перемещения найденных файлов -->
+	<FoundFolder>Results</FoundFolder>
+	<!-- Включение найденной строки из файла в результат -->
+	<IncludeFoundString>true</IncludeFoundString>
+	
+	<!--
+	В полях ниже true для выполнения поиска данного формата, любое иное значение для пропуска данного поиска
+	<SearchInZip>true</SearchInZip> - Для поиска по архивам zip
+	<SearchInAllArchives>true</SearchInAllArchives> - Для поиска по всем архивам
+	-->
+	<SearchInZip>false</SearchInZip>
+	<SearchInAllArchives>false</SearchInAllArchives>
+
+	<EncodingSettings>
+		<!-- Включение поиска по кодировкам -->
+		<CheckEncoding>false</CheckEncoding>
+	
+		<!-- Поиск по кодировкам -->
+		<Standart>true</Standart>
+		<ANSI>true</ANSI>
+		<UTF-8>true</UTF-8>
+		<CP866>true</CP866>
+		<CP1251>true</CP1251>
+	</EncodingSettings>
+</Properties>
