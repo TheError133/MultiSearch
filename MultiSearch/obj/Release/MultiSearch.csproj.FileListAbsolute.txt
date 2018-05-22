@@ -14,3 +14,11 @@ D:\GIT\MultiSearch\MultiSearch\bin\Release\MultiSearch.pdb
 D:\GIT\MultiSearch\MultiSearch\bin\Release\Ionic.Zip.dll
 D:\GIT\MultiSearch\MultiSearch\bin\Release\SharpCompress.dll
 D:\GIT\MultiSearch\MultiSearch\obj\Release\MultiSearch.csprojResolveAssemblyReference.cache
+D:\roman\SharpProjects\MultiSearch\MultiSearch\bin\Release\MultiSearch.exe.config
+D:\roman\SharpProjects\MultiSearch\MultiSearch\obj\Release\MultiSearch.exe
+D:\roman\SharpProjects\MultiSearch\MultiSearch\obj\Release\MultiSearch.pdb
+D:\roman\SharpProjects\MultiSearch\MultiSearch\bin\Release\MultiSearch.exe
+D:\roman\SharpProjects\MultiSearch\MultiSearch\bin\Release\MultiSearch.pdb
+D:\roman\SharpProjects\MultiSearch\MultiSearch\bin\Release\Ionic.Zip.dll
+D:\roman\SharpProjects\MultiSearch\MultiSearch\bin\Release\SharpCompress.dll
+D:\roman\SharpProjects\MultiSearch\MultiSearch\obj\Release\MultiSearch.csprojResolveAssemblyReference.cache
