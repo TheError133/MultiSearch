@@ -31,9 +31,25 @@ namespace MultiSearch
             Thread.Sleep(2000);
 
             List<Thread> ThreadList = new List<Thread>();
+
             //При отсутствии папка результатов создается
             if (!Directory.Exists(FoundFolder))
                 Directory.CreateDirectory(FoundFolder);
+            //При наличии папка очищается
+            else
+            {
+                //Удаление всех внутренних папок
+                foreach (string InnerFolder in Directory.GetDirectories(FoundFolder))
+                    Directory.Delete(InnerFolder, true);
+                //Удаление всех внутренних файлов
+                foreach (string InnerFile in Directory.GetFiles(FoundFolder))
+                    File.Delete(InnerFile);
+            }
+
+            //При наличии файла разультатов он удаляется (2 файла с одинаковым именем быть не должно)
+            if (File.Exists(ResultFile))
+                File.Delete(ResultFile);
+
             //Разделение строковых данных между потоками
             for (int i = 0; i < ThreadCount; i++)
             {
